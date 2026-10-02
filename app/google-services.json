@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "188821018345",
+    "project_id": "notes-app-16966",
+    "storage_bucket": "notes-app-16966.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188821018345:android:20044cb9e5e67c8047c278",
+        "android_client_info": {
+          "package_name": "uz.gita.notesapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "188821018345-51mu33us1388dln7bl9sg0de6ola598p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.gita.notesapp",
+            "certificate_hash": "f38caf9a0da468e5f7c8e85b51d3a5428b0cc6bd"
+          }
+        },
+        {
+          "client_id": "188821018345-4j494fgjpfjlt3q6nm2cj5psu4lg3tv5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQPDsnFtO_R-Tq-BxwHM7o4-i4PcxAS9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "188821018345-4j494fgjpfjlt3q6nm2cj5psu4lg3tv5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

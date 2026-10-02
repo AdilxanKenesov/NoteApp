@@ -1,0 +1,72 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // users/{uid}: profile written by AuthRepositoryImpl.saveUser (UserData).
+    function validUser(uid) {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['id', 'name', 'email', 'userImg'])
+        && data.id == uid
+        && data.name is string && data.name.size() <= 100
+        && data.email is string && data.email.size() <= 320
+        && (data.userImg == null || (data.userImg is string && data.userImg.size() <= 2048));
+    }
+
+    function validType(type) {
+      return type in ['STUDY', 'WORK', 'PERSONAL', 'IDEA', 'LINK'];
+    }
+
+    function validTitle(title) {
+      return title is string && title.size() > 0 && title.size() <= 500;
+    }
+
+    function validDescription(description) {
+      return description is string && description.size() <= 200000;
+    }
+
+    // users/{uid}/notes/{noteId}: written by NotesRepositoryImpl.addNote (NotesData).
+    function validNewNote(noteId) {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['id', 'title', 'description', 'type', 'favourite', 'createdAt'])
+        && data.id == noteId
+        && validTitle(data.title)
+        && validDescription(data.description)
+        && validType(data.type)
+        && data.favourite is bool
+        && data.createdAt is int;
+    }
+
+    // updateNote / setFavourite only touch these fields; id and createdAt never change.
+    // A note saved with an old category name may keep it until its type is changed.
+    function validNoteUpdate() {
+      let data = request.resource.data;
+      return data.diff(resource.data).affectedKeys().hasOnly(['title', 'description', 'type', 'favourite'])
+        && validTitle(data.title)
+        && validDescription(data.description)
+        && (data.type == resource.data.type || validType(data.type))
+        && data.favourite is bool;
+    }
+
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid) && validUser(uid);
+
+      match /notes/{noteId} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid) && validNewNote(noteId);
+        allow update: if isOwner(uid) && validNoteUpdate();
+      }
+    }
+
+    // Everything else is closed.
+  }
+}
