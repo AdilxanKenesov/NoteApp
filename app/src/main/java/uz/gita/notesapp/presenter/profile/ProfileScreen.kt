@@ -98,7 +98,7 @@ class ProfileScreen : Screen {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProfileScreenContent(
+internal fun ProfileScreenContent(
     state: ProfileContract.UiProfileState,
     snackbarHostState: SnackbarHostState,
     onEventDispatcher: (Intent) -> Unit,

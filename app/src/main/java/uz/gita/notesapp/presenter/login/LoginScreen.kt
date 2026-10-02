@@ -83,7 +83,7 @@ class LoginScreen : Screen {
 }
 
 @Composable
-private fun LoginScreenContent(
+internal fun LoginScreenContent(
     state: LoginContract.UiLoginState,
     snackbarHostState: SnackbarHostState,
     onEventDispatcher: (Intent) -> Unit,

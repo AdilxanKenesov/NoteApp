@@ -1,10 +1,21 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
+    id("io.github.takahirom.roborazzi")
 }
+
+// Release signing comes from keystore.properties (git-ignored) or, on CI, environment variables.
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("keystore.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+fun signingValue(key: String, env: String): String? =
+    keystoreProperties.getProperty(key) ?: System.getenv(env)
 
 android {
     namespace = "uz.gita.notesapp"
@@ -17,9 +28,21 @@ android {
         minSdk = 24
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            val storePath = signingValue("storeFile", "NOTES_KEYSTORE_FILE")
+            if (storePath != null) {
+                storeFile = file(storePath)
+                storePassword = signingValue("storePassword", "NOTES_KEYSTORE_PASSWORD")
+                keyAlias = signingValue("keyAlias", "NOTES_KEY_ALIAS")
+                keyPassword = signingValue("keyPassword", "NOTES_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
@@ -27,6 +50,7 @@ android {
             optimization {
                 enable = false
             }
+            signingConfig = signingConfigs.getByName("release").takeIf { it.storeFile != null }
         }
     }
     compileOptions {
@@ -35,6 +59,9 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
@@ -90,6 +117,13 @@ dependencies {
     implementation("org.orbit-mvi:orbit-compose:$orbitVersion")
     testImplementation("org.orbit-mvi:orbit-test:$orbitVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+
+    // README screenshots: ./gradlew recordRoborazziDebug
+    testImplementation("org.robolectric:robolectric:4.17")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:1.76.0")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi-compose:1.76.0")
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
 
     implementation(platform("com.google.firebase:firebase-bom:34.16.0"))
     implementation("com.google.firebase:firebase-analytics")

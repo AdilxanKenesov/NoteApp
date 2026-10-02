@@ -103,7 +103,7 @@ class HomeScreen : Screen {
 }
 
 @Composable
-private fun HomeScreenContent(
+internal fun HomeScreenContent(
     state: HomeContract.UiHomeState,
     snackbarHostState: SnackbarHostState,
     onEventDispatcher: (Intent) -> Unit

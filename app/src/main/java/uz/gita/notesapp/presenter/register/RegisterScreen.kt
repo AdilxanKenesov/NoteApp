@@ -81,7 +81,7 @@ class RegisterScreen : Screen {
 }
 
 @Composable
-private fun RegisterScreenContent(
+internal fun RegisterScreenContent(
     state: RegisterContract.UiRegisterState,
     snackbarHostState: SnackbarHostState,
     onEventDispatcher: (Intent) -> Unit,

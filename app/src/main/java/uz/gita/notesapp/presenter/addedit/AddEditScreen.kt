@@ -130,7 +130,7 @@ data class AddEditScreen(private val noteId: String?) : Screen {
 }
 
 @Composable
-private fun AddEditScreenContent(
+internal fun AddEditScreenContent(
     state: AddEditContract.UiAddEditState,
     snackbarHostState: SnackbarHostState,
     onEventDispatcher: (Intent) -> Unit

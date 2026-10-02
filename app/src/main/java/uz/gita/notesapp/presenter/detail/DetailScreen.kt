@@ -98,7 +98,7 @@ data class DetailScreen(private val noteId: String) : Screen {
 }
 
 @Composable
-private fun DetailScreenContent(
+internal fun DetailScreenContent(
     state: DetailContract.UiDetailState,
     snackbarHostState: SnackbarHostState,
     onEventDispatcher: (Intent) -> Unit
